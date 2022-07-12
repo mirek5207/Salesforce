@@ -4,7 +4,7 @@ public with sharing class EventSpeakerTriggerService {
         for(SObject ev : objList){
             for(SObject speaker : speakers){
                 if(ev.get('Speaker__c') == speaker.get('Speaker__c')){
-                    ev.addError('Speaker is not available!'+ ev.get('Speaker__c') + ' ' +speaker.id);
+                    ev.addError('Speaker is not available!');
                 }
             }
         }
