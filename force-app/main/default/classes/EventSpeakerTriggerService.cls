@@ -16,25 +16,28 @@ public with sharing class EventSpeakerTriggerService {
             newEventsMap.put(es.Id, es);
         }
         
-        Map<Id,Event_Speaker__c> oldEventSpeakerMap = new Map<Id,Event_Speaker__c>();
+        Map<Id,Set<Event_Speaker__c>> oldEventSpeakerMap = new Map<Id,Set<Event_Speaker__c>>();
         for(Event_Speaker__C es : [Select Speaker__c, Event__r.Start_Date_Time__c, Event__r.End_Date_Time__c from Event_Speaker__c WHERE Speaker__c IN: speakersId]){
-            if(es != null) oldEventSpeakerMap.put(es.Speaker__c, es);
+            if(oldEventSpeakerMap.containsKey(es.Speaker__c)){
+                oldEventSpeakerMap.get(es.Speaker__c).add(es);
+            } 
+            else{
+                oldEventSpeakerMap.put(es.Speaker__c, new Set<Event_Speaker__c>{es});
+            }
         }
         
         if(!oldEventSpeakerMap.isEmpty()){
             for(Event_Speaker__c es : eventSpeakerList){
-                if(newEventsMap != null){
-                    Datetime newEventStartDate = newEventsMap.get(es.Event__c).Start_Date_Time__c;
-                    Datetime newEventEndDate = newEventsMap.get(es.Event__c).End_Date_Time__c;
-                    Datetime oldEventStartDate = oldEventSpeakerMap.get(es.Speaker__c).Event__r.Start_Date_Time__c;
-                    Datetime oldEventEndDate = oldEventSpeakerMap.get(es.Speaker__c).Event__r.End_Date_Time__c;
-
+                Datetime newEventStartDate = newEventsMap.get(es.Event__c).Start_Date_Time__c;
+                Datetime newEventEndDate = newEventsMap.get(es.Event__c).End_Date_Time__c;
+                for(Event_Speaker__c s: oldEventSpeakerMap.get(es.Speaker__c)){
+                    Datetime oldEventStartDate = s.Event__r.Start_Date_Time__c;
+                    Datetime oldEventEndDate = s.Event__r.End_Date_Time__c;
                     if(!(newEventEndDate <= oldEventStartDate || newEventStartDate >= oldEventEndDate))  
                     {
-                        eventSpeakerList[0].addError(errorMessage);
+                        es.addError(errorMessage);
                     }
-                
-                }
+                }            
             }
         }
     }
