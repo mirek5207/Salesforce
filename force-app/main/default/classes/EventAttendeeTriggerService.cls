@@ -23,10 +23,14 @@ public with sharing class EventAttendeeTriggerService {
             mail.setHtmlBody(body);
             mails.add(mail);
         }
-        try {
-            Messaging.SendEmailResult[] results = Messaging.sendEmail(mails);
-        } catch(System.EmailException ex){
-            Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Caught email exception: ' + ex));
+        Messaging.SendEmailResult[] results = Messaging.sendEmail(mails);
+        displayErrorIfThereWasAProblemWithSendingEmail(results);
+    }
+    @TestVisible private static void displayErrorIfThereWasAProblemWithSendingEmail(Messaging.SendEmailResult[] results) {
+        for (Messaging.SendEmailResult res : results) {
+            if (!res.isSuccess()) {
+                Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Wystąpił błąd przy wysyłaniu emaila potwierdzającego zapis uczestnika na wydarzenie'));
+            }
         }
     }
 }
