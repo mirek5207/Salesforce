@@ -96,7 +96,7 @@ public with sharing class EventSpeakerTriggerTest {
         uow.commitWork();   
     }
     @isTest
-    public static void speakerIsAssignedToAnotherEventAtSameRangeOfTime_DateOverlapFromLeft(){
+    public static void speakerShouldNotBeAssignedToAnotherEventAtSameRangeOfTime_DateOverlapFromLeft(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Speaker__c.SObjectType
@@ -116,7 +116,7 @@ public with sharing class EventSpeakerTriggerTest {
         }
     }
     @isTest
-    public static void speakerIsAssignedToAnotherEventAtSameRangeOfTime_DateOverlapFromRight(){
+    public static void speakerShouldNotBeAssignedToAnotherEventAtSameRangeOfTime_DateOverlapFromRight(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Speaker__c.SObjectType
@@ -137,7 +137,50 @@ public with sharing class EventSpeakerTriggerTest {
     }
 
     @isTest
-    public static void speakerIsNotAssignedToAnotherEventAtSameRangeOfTime(){
+    public static void speakerShouldNotBeAssignedToAnotherEventAtSameRangeOfTime_DateInside(){
+        fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
+            new Schema.SObjectType[] {
+                Event_Speaker__c.SObjectType
+            }
+        );
+        Event__c event = [SELECT Id FROM Event__c WHERE Event__c.Start_Date_Time__c = :EVENT_START_DATE_INSIDE_BASIC AND Event__c.End_Date_Time__c = :EVENT_END_DATE_INSIDE_BASIC];
+        Speaker__c speaker = [SELECT Id FROM Speaker__c WHERE Speaker__c.Name = :SPEAKER_NAME];
+        Event_Speaker__c eventSpeaker = new Event_Speaker__c();
+        uow.registerRelationship(eventSpeaker,Event_Speaker__c.Speaker__c,speaker);
+        uow.registerNew(eventSpeaker,Event_Speaker__c.Event__c,event);
+        try{
+            test.startTest();
+            uow.commitWork();
+            test.stopTest();
+        }catch(Exception ex){
+            System.assertEquals(ex.getMessage().contains(ERROR_MESSAGE),true);
+        }
+    }
+
+    @isTest
+    public static void speakerShouldNotBeAssignedToAnotherEventAtSameRangeOfTime_DateOutside(){
+        fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
+            new Schema.SObjectType[] {
+                Event_Speaker__c.SObjectType
+            }
+        );
+        Event__c event = [SELECT Id FROM Event__c WHERE Event__c.Start_Date_Time__c = :EVENT_START_DATE_OUTSIDE_BASIC AND Event__c.End_Date_Time__c = :EVENT_END_DATE_OUTSIDE_BASIC];
+        Speaker__c speaker = [SELECT Id FROM Speaker__c WHERE Speaker__c.Name = :SPEAKER_NAME];
+        Event_Speaker__c eventSpeaker = new Event_Speaker__c();
+        uow.registerRelationship(eventSpeaker,Event_Speaker__c.Speaker__c,speaker);
+        uow.registerNew(eventSpeaker,Event_Speaker__c.Event__c,event);
+        try{
+            test.startTest();
+            uow.commitWork();
+            test.stopTest();
+        }catch(Exception ex){
+            System.assertEquals(ex.getMessage().contains(ERROR_MESSAGE),true);
+        }
+    }
+
+
+    @isTest
+    public static void speakerShoulBeAssignedToAnotherEventInDiffrentRangeOfTime(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Speaker__c.SObjectType
