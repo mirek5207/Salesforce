@@ -1,57 +1,63 @@
 @isTest
 public with sharing class EventAttendeeTriggerTest {
+    private static final String ORGANIZER_NAME = 'testOrganizer';
+    private static final String ATTENDEE_NAME = 'testAttendee';
+    private static final String EVENT_NAME = 'testEvent';
+    private static final String TEST_EMAIL = 'test@gmail.com';
+    private static final String TEST_PHONE = '111222333';
+    private static final String SPEAKER_NAME = 'testSpeaker';
+    private static final Datetime EVENT_START_DATE = DateTime.newInstance(2022, 8, 16);
+    private static final Datetime EVENT_END_DATE = DateTIme.newInstance(2022, 8, 18);
+    private static final Boolean EVENT_LIVE_TRUE = true;
+    private static final INTEGER EVENT_MAX_SEATS = 15;
+
     @TestSetup static void makeData(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Organizer__c.SObjectType,
                 Attendee__c.SObjectType,
-                Event__c.SObjectType,
-                Event_Attendee__c.SObjectType
+                Event__c.SObjectType
             }
         );
 
         Event_Organizer__c organizer = new Event_Organizer__c();
-        organizer.Name = 'testOrganizer';
-        organizer.Email__c = 'organizer@gmail.com';
-        organizer.Phone__c = '111222333';
+        organizer.Name = ORGANIZER_NAME;
+        organizer.Email__c = TEST_EMAIL;
+        organizer.Phone__c = TEST_PHONE;
         uow.registerNew(organizer);
 
         Attendee__c attendee = new Attendee__c();
-        attendee.Name = 'testSpeaker';
-        attendee.Phone__c = '111222333';
-        attendee.Email__c = 'speaker@gmai.com';
+        attendee.Name = ATTENDEE_NAME;
+        attendee.Phone__c = TEST_PHONE;
+        attendee.Email__c = TEST_EMAIL;
         uow.registerNew(attendee);
 
         Event__c event = new Event__c();
-        event.Name = '16.08.2022 - 18.08.2022';
-        event.Name__c = 'testEvent';
-        event.Start_Date_Time__c = DateTime.newInstance(2022, 8, 16);
-        event.End_Date_Time__c = DateTIme.newInstance(2022, 8, 18);
-        event.Live__c = true;
-        event.Max_Seats__c = 15;
+        event.Name = EVENT_NAME;
+        event.Name__c = EVENT_NAME;
+        event.Start_Date_Time__c = EVENT_START_DATE;
+        event.End_Date_Time__c = EVENT_END_DATE;
+        event.Live__c = EVENT_LIVE_TRUE;
+        event.Max_Seats__c = EVENT_MAX_SEATS;
         uow.registerNew(event, Event__c.Organizer__c,organizer);       
-        test.startTest();
         uow.commitWork();
-        test.stopTest();
     }
 
     @isTest
     public static void sendEmailWithConfirmationAfterInsertTest(){
-        String errorMessage = 'Caught email exception:';
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Attendee__c.SObjectType
             }
         );
-        Attendee__c attendee = [Select id from Attendee__c WHERE Attendee__c.Name = 'testSpeaker' ];
-        Event__c event = [Select id from Event__c Where Event__c.Name = '16.08.2022 - 18.08.2022'];
+        Attendee__c attendee = [SELECT id FROM Attendee__c WHERE Attendee__c.Name = :ATTENDEE_NAME ];
+        Event__c event = [SELECT id FROM Event__c WHERE Event__c.Start_Date_Time__c = :EVENT_START_DATE AND Event__c.End_Date_Time__c = :EVENT_END_DATE];
         Event_Attendee__c eventAttendee = new Event_Attendee__c();
         uow.registerRelationship(eventAttendee,Event_Attendee__c.Attendee__c,attendee);
         uow.registerNew(eventAttendee,Event_Attendee__c.Event__c,event);
         test.startTest();
-        System.assertEquals(0, Limits.getEmailInvocations(), 'No emails should be sent');
         uow.commitWork();
-        System.assertEquals(1, Limits.getEmailInvocations(), 'Emails should be sent');
+        System.assertEquals(1, Limits.getEmailInvocations());
         test.stopTest();    
     }
 
