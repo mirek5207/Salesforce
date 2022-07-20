@@ -1,7 +1,7 @@
 public with sharing class EventSpeakerTriggerService {
+    private final String errorMessage = 'Speaker is not available!';
+
     public static void checkIfSpeakerIsNotAssignedToAnotherEvent(List<Event_Speaker__C> eventSpeakerList){
-        String errorMessage = 'Speaker is not available!';
-    
         List<Id> speakersId = new List<Id>();
         for(Event_Speaker__C evS : eventSpeakerList){
             speakersId.add(evs.Speaker__c);
@@ -12,12 +12,12 @@ public with sharing class EventSpeakerTriggerService {
         }
 
         Map<Id,Event__c> newEventsMap = new Map<Id,Event__c>();
-        for(Event__C es :[Select Id, Start_Date_Time__c, End_Date_Time__c FROM Event__c WHERE Id IN: eventsId]){
+        for(Event__C es :[SELECT Id, Start_Date_Time__c, End_Date_Time__c FROM Event__c WHERE Id IN: eventsId]){
             newEventsMap.put(es.Id, es);
         }
         
         Map<Id,Set<Event_Speaker__c>> oldEventSpeakerMap = new Map<Id,Set<Event_Speaker__c>>();
-        for(Event_Speaker__C es : [Select Speaker__c, Event__r.Start_Date_Time__c, Event__r.End_Date_Time__c from Event_Speaker__c WHERE Speaker__c IN: speakersId]){
+        for(Event_Speaker__C es : [SELECT Speaker__c, Event__r.Start_Date_Time__c, Event__r.End_Date_Time__c FROM Event_Speaker__c WHERE Speaker__c IN: speakersId]){
             if(oldEventSpeakerMap.containsKey(es.Speaker__c)){
                 oldEventSpeakerMap.get(es.Speaker__c).add(es);
             } 
