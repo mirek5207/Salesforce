@@ -1,5 +1,5 @@
 public with sharing class EventSpeakerTriggerService {
-    private final String errorMessage = 'Speaker is not available!';
+    private final String ERROR_MESSAGE = 'Speaker is not available!';
 
     public static void checkIfSpeakerIsNotAssignedToAnotherEvent(List<Event_Speaker__C> eventSpeakerList){
         List<Id> speakersId = new List<Id>();
@@ -35,7 +35,7 @@ public with sharing class EventSpeakerTriggerService {
                     Datetime oldEventEndDate = s.Event__r.End_Date_Time__c;
                     if(!(newEventEndDate <= oldEventStartDate || newEventStartDate >= oldEventEndDate))  
                     {
-                        es.addError(errorMessage);
+                        es.addError(ERROR_MESSAGE);
                     }
                 }            
             }
