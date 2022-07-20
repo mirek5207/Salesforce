@@ -11,7 +11,7 @@ public with sharing class EventAttendeeTriggerTest {
     private static final Boolean EVENT_LIVE_TRUE = true;
     private static final INTEGER EVENT_MAX_SEATS = 15;
 
-    @TestSetup static void makeData(){
+    @TestSetup static void dataSetup(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
                 Event_Organizer__c.SObjectType,
