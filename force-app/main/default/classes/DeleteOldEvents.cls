@@ -1,4 +1,8 @@
 public with sharing class DeleteOldEvents implements Database.Batchable<SObject> {
+    private final String subjectEmail = 'Intern: Project Cloufit - Batch Apex';
+    private final String bodyEmail = 'Execution of the batch has been processed';
+    private final String receiverEmail = 'piotr.wasielewski@cloubees.com';
+
     public Database.QueryLocator start(Database.BatchableContext bc) {
         Datetime today = System.now();
         Datetime todayMinus2Months = today.addMonths(-2);
@@ -8,6 +12,6 @@ public with sharing class DeleteOldEvents implements Database.Batchable<SObject>
         delete events;
     }
     public void finish(Database.BatchableContext bc){
-        EmailSender.sendEmail('Intern: Project Cloufit - Batch Apex', 'Execution of the batch has been processed', 'mirek15207@gmail.com');
+        EmailSender.sendEmail(subjectEmail, bodyEmail, receiverEmail);
     }
 }
