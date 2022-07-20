@@ -116,6 +116,27 @@ public with sharing class EventSpeakerTriggerTest {
         }
     }
     @isTest
+    public static void speakerIsAssignedToAnotherEventAtSameRangeOfTime_DateOverlapFromRight(){
+        fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
+            new Schema.SObjectType[] {
+                Event_Speaker__c.SObjectType
+            }
+        );
+        Event__c event = [SELECT Id FROM Event__c WHERE Event__c.Start_Date_Time__c = :EVENT_START_DATE_OVERLAP_FROM_RIGHT AND Event__c.End_Date_Time__c = :EVENT_END_DATE_OVERLAP_FROM_RIGHT];
+        Speaker__c speaker = [SELECT Id FROM Speaker__c WHERE Speaker__c.Name = :SPEAKER_NAME];
+        Event_Speaker__c eventSpeaker = new Event_Speaker__c();
+        uow.registerRelationship(eventSpeaker,Event_Speaker__c.Speaker__c,speaker);
+        uow.registerNew(eventSpeaker,Event_Speaker__c.Event__c,event);
+        try{
+            test.startTest();
+            uow.commitWork();
+            test.stopTest();
+        }catch(Exception ex){
+            System.assertEquals(ex.getMessage().contains(ERROR_MESSAGE),true);
+        }
+    }
+
+    @isTest
     public static void speakerIsNotAssignedToAnotherEventAtSameRangeOfTime(){
         fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(
             new Schema.SObjectType[] {
