@@ -1,4 +1,6 @@
 public with sharing class EventAttendeeTriggerService {
+    private static final String ERROR_MESSAGE = 'Wystąpił błąd przy wysyłaniu emaila potwierdzającego zapis uczestnika na wydarzenie';
+    
     public static void sendEmailWithConfirmationAfterInsert(List<Event_Attendee__C> eventAttendeeList) {
         List<Messaging.SingleEmailMessage> mails = new List<Messaging.SingleEmailMessage>();
         List<Id> eventAttendeeId = new List<Id>();
@@ -29,7 +31,7 @@ public with sharing class EventAttendeeTriggerService {
     @TestVisible private static void displayErrorIfThereWasAProblemWithSendingEmail(Messaging.SendEmailResult[] results) {
         for (Messaging.SendEmailResult res : results) {
             if (!res.isSuccess()) {
-                Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Wystąpił błąd przy wysyłaniu emaila potwierdzającego zapis uczestnika na wydarzenie'));
+                Apexpages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, ERROR_MESSAGE));
             }
         }
     }
