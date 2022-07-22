@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Event_Type_field_value_is_InPerson</fullName>
+    <active>true</active>
+    <description>If Event Type field value is In-Person then user must need to select Location on Event Record</description>
+    <errorConditionFormula>AND(ISPICKVAL(Event_Type__c, &quot;In-Person&quot;), Location__c = &quot;&quot;)</errorConditionFormula>
+    <errorDisplayField>Location__c</errorDisplayField>
+    <errorMessage>Select Location</errorMessage>
+</ValidationRule>
