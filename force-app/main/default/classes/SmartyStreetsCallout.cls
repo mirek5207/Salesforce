@@ -1,36 +1,53 @@
-public with sharing class SmartyStreetsCallout {
+global class SmartyStreetsCallout implements Queueable,Database.AllowsCallouts {
     private static final String ADDRESS_VARIABLE = '/street-address?';
     private static final String AUTH_ID = 'auth-id=07e9db34-d373-6323-4b86-bb9e15c34ea4&';
     private static final String AUTH_TOKEN = 'auth-token=tXkakzPemyE3N1vME4Se&';
     private static final String AUTH_LICENSE = 'license=us-core-cloud';
     // private static final String DATA = 'street=142%20Park%20Rd&street2=&city=Pittsford&state=NY&zipcode=14534&candidates=10&match=invalid&';
-    private static final Boolean VERIFIED_TRUE = true;
-    private static final Boolean VERIFIED_FALSE = false;
+    private static final Boolean VALUE_TRUE = true;
+    private static final Boolean VALUE_FALSE = false;
 
-    @Future(callout=true)
-    public static void callUsStreetApiFuture(Set<Id> locationsIdSet, String authId, String authToken, String authLicense)
-    {
-        List<Location__c> locationsList = [SELECT Street__c, City__c, State__c, Postal_Code__c FROM Location__c WHERE Id IN: locationsIdSet AND Verified__c = :VERIFIED_FALSE];
-        callUsStreetApi(locationsList, authId, authToken, authLicense);
+    private List<Location__c> locations;
 
+    public SmartyStreetsCallout(List<Location__c> locations){
+        this.locations = locations;
     }
-    public static void callUsStreetApi (List<Location__c> locationsList, String authId, String authToken, String authLicense)
-    {
+    public void execute(QueueableContext context) {
+        List<Location__c> locationsToUpdate = new List<Location__c>();
         HttpRequest request = new HttpRequest();
         request.setMethod('GET');
         Http http = new Http();
         request.setHeader('Content-Type', 'application/json');
-        for(Location__c location : locationsList){
-            String data = 'street=' + location.Street__c + '&street2=&city='+ location.City__c + '&state=' + location.State__c +'&zipcode=' + location.Postal_Code__c + '&candidates=1&match=strict&';
+        for(Location__c location: [SELECT Id, Verified__c, Street__c, City__c, State__c, Postal_Code__c FROM Location__c WHERE Id IN : locations]){
+            String street = EncodingUtil.urlEncode(location.Street__c , 'UTF-8');
+            String city = EncodingUtil.urlEncode(location.City__c, 'UTF-8'); 
+            String data = 'street=' + street + '&street2=&city='+ city + '&state=' + location.State__c +'&zipcode=' + location.Postal_Code__c + '&candidates=1&match=strict&';
             request.setEndpoint('callout:Smarty_Streets_Path' + ADDRESS_VARIABLE + AUTH_ID + AUTH_TOKEN + data + AUTH_LICENSE);
-            System.debug('callout:Smarty_Streets_Path' + ADDRESS_VARIABLE + AUTH_ID + AUTH_TOKEN + data + AUTH_LICENSE);
             HttpResponse response = http.send(request);
             if(response.getBody() != '[]'){
-                location.Verified__c = true;
-                update location;
+                location.Verified__c = VALUE_TRUE;   
             }
-            System.debug(response.getBody());
+            else{
+                location.Verified__c = VALUE_FALSE;   
+            }
+            locationsToUpdate.add(location);
         }
-        //LocationTriggerService.updateStatusOfLocationVerified(locationsList, VERIFIED_TRUE);
+        CheckRecursive.runOnce = VALUE_FALSE;
+        update locationsToUpdate;
+        CheckRecursive.runOnce = VALUE_TRUE;
+
     }
+
+
+    //dziala
+    // public void execute(QueueableContext context) {
+    //     List<Location__c> locationsToUpdate = new List<Location__c>();
+    //     for(Location__c location: [SELECT Id, Verified__c FROM Location__c WHERE Id IN : locations AND Verified__c = :VALUE_FALSE]){
+    //         location.Verified__c = VALUE_TRUE;
+    //         locationsToUpdate.add(location);
+    //     }
+    //     CheckRecursive.runOnce = VALUE_FALSE;
+    //     update locationsToUpdate;
+    //     CheckRecursive.runOnce = VALUE_TRUE;
+    // }
 }

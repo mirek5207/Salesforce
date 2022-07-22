@@ -7,13 +7,8 @@ public with sharing class LocationTriggerService {
     private static final Boolean VERIFIED_FALSE = false;
 
     public static void checkIfLocationIsCorrectAndChangeStatusOfVerified(List<Location__c> locationsList){
-        Set<Id> locationsIdSet = (new Map<Id,Location__c>(locationsList)).keySet();
-        SmartyStreetsCallout.callUsStreetApiFuture(locationsIdSet, AUTH_ID, AUTH_TOKEN, AUTH_LICENSE);
-    }
-    public static void updateStatusOfLocationVerified(List<Location__c> locationsList,Boolean status){
-        for(Location__c location: locationsList){
-            location.Verified__c = true;
-        }
-        update locationsList;
+        //Set<Id> locationsIdSet = (new Map<Id,Location__c>(locationsList)).keySet();
+        SmartyStreetsCallout updateJob = new SmartyStreetsCallout(locationsList);
+        ID jobId = System.enqueueJob(updateJob);
     }
 }
