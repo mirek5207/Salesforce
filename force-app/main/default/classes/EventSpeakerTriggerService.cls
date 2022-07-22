@@ -1,5 +1,5 @@
 public with sharing class EventSpeakerTriggerService {
-    private final String ERROR_MESSAGE = 'Speaker is not available!';
+    private static final String ERROR_MESSAGE = 'Speaker is not available!';
 
     public static void checkIfSpeakerIsNotAssignedToAnotherEvent(List<Event_Speaker__C> eventSpeakerList){
         List<Id> speakersId = new List<Id>();
