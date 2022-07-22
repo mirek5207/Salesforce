@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Recurring_Checkbox_Not_Checked</fullName>
-    <active>true</active>
-    <description>If checkbox is unchecked then User can not select Frequency field</description>
-    <errorConditionFormula>AND(Recurring__c = FALSE,NOT(ISPICKVAL(Frequency__c, &quot;&quot;)))</errorConditionFormula>
-    <errorDisplayField>Recurring__c</errorDisplayField>
-    <errorMessage>Reccuring field is not checked</errorMessage>
-</ValidationRule>
