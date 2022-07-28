@@ -1,7 +1,7 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
 <template>
-    <lightning-card>
+    <lightning-card if:true={speakerArray}>
         <lightning-datatable key-field="id"
                              data={speakerArray}
                              columns={column1}
