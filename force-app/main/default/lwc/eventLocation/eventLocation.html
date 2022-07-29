@@ -1,0 +1,18 @@
+<template>
+    
+    <lightning-card>
+        <template if:false={locationIsEmpty} for:each={locationArray} for:item="location">
+            <p key={location.Id} style="display:inline">
+                <lightning-badge label={location.Name}></lightning-badge><br/><br/>
+                <lightning-badge label={location.Street__c}></lightning-badge>
+                <lightning-badge label={location.City__c}></lightning-badge><br/><br/>
+                <lightning-badge label={location.State__c}></lightning-badge>
+                <lightning-badge label={location.Postal_Code__c}></lightning-badge><br/><br/>
+                <lightning-badge label={location.Country__c}></lightning-badge>
+            </p>
+        </template>
+        <template if:true={locationIsEmpty}>
+            <h2>There is not added location for this event</h2>
+        </template>
+    </lightning-card>
+</template>
