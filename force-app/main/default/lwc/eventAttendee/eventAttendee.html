@@ -1,0 +1,9 @@
+<template>
+    <lightning-card if:true={attendeeArray}>
+        <lightning-datatable key-field="id"
+                             data={attendeeArray}
+                             columns={column1}
+                             hide-checkbox-column="true">
+        </lightning-datatable>
+    </lightning-card>
+</template>
