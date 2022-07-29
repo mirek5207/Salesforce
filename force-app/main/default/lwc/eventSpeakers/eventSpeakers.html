@@ -1,6 +1,9 @@
 <!-- sldsValidatorIgnore -->
 <!-- sldsValidatorIgnore -->
 <template>
+    <lightning-card>
+        <lightning-button label="New Speaker" onclick={navigateToNewEventSpeakerPage} variant="Brand"></lightning-button>
+    </lightning-card>
     <lightning-card if:true={speakerArray}>
         <lightning-datatable key-field="id"
                              data={speakerArray}
