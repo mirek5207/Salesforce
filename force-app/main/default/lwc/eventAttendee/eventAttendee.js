@@ -1,41 +1,45 @@
 import { LightningElement,api, wire } from 'lwc';
-import attendeeData from '@salesforce/apex/EventAttendeeController.getEventAttendeeList'
 import { NavigationMixin } from 'lightning/navigation';
 import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
+import ATTENDEE_DATA from '@salesforce/apex/EventAttendeeController.getEventAttendeeList';
 
-const column = [
+import EVENT_ATTENDEE_OBJECT from '@salesforce/schema/Event_Attendee__c';
+
+const COLUMN = [
     {label: 'Attendee name', fieldName : 'name'},
     {label: 'Attendee email', fieldName : 'email'},
     {label: 'Company name', fieldName : 'companyName'},
     {label: 'Location(city)', fieldName : 'city'},
 ]
+const STANDART_TYPE_OF_OBJECT_PAGE = 'standard__objectPage';
+const ACTION_NAME_NEW = 'new';
+const NAVIGATION_LOCATION = 'RELATED_LIST';
+const EVENT_ATTENDEE_OBJECT_API_NAME = EVENT_ATTENDEE_OBJECT.objectApiName;
 
 export default class EventAttendee extends NavigationMixin(LightningElement) {
-    attendeeArray= [];
-    column1 = column
     @api recordId;
-
-    @wire(attendeeData)
+    column1 = COLUMN;
+    attendeeArray = [];
+    
+    
+    @wire(ATTENDEE_DATA)
     connectedCallback(){
-        attendeeData({eventId : this.recordId}).then(res=>{
-            console.log(res)
+        ATTENDEE_DATA({eventId : this.recordId}).then(res=>{
             this.attendeeArray = res;
-            console.log(this.attendeeArray)
         }).catch(error=>{
             console.error(JSON.stringify(error))
         })
     }
     navigateToNewEventAttendeePage() {
-        console.log('log test')
         this[NavigationMixin.Navigate]({
-            type: 'standard__objectPage',
+            type: STANDART_TYPE_OF_OBJECT_PAGE,
             attributes: {
-                objectApiName: 'Event_Attendee__c',
-                actionName: 'new'
+                objectApiName: EVENT_ATTENDEE_OBJECT_API_NAME,
+                actionName: ACTION_NAME_NEW
             },
             state: {
                 defaultFieldValues: encodeDefaultFieldValues({Event__c: this.recordId}),
-                navigationLocation: 'RELATED_LIST'
+                navigationLocation: NAVIGATION_LOCATION
             }
         });
     }

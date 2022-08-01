@@ -5,5 +5,4 @@ export default class EventDetail extends LightningElement {
     @api recordId
     @api objectApiName;
     recordName = EVENT_NAME;
-
 }
