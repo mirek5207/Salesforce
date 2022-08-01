@@ -1,0 +1,26 @@
+<template>
+    <lightning-card title="Event" icon-name="standard:Event">
+        <div class="slds-m-around--xx-large">
+            <lightning-input label="Name" name="Name" type="text" value={formFields.Name} required="*" onchange={changeHandler}></lightning-input>
+            
+            <lightning-record-edit-form object-api-name={eventObject.objectApiName} required="*" onchange={changeHandlerOrganizer}>
+                <lightning-messages>
+                </lightning-messages>
+                <lightning-input-field field-name={eventOrganizer.fieldApiName} style="padding: 0px;"></lightning-input-field>
+            </lightning-record-edit-form>
+
+            <lightning-input label="Start Date" name="Start_Date" type="datetime" value={formFields.Start_Date} required="*" onchange={changeHandler}></lightning-input>
+            <lightning-input label="End Date" name="End_Date" type="datetime" value={formFields.End_Date} onchange={changeHandler}></lightning-input>
+            <lightning-input label="Max Attendees" name="Max_Attendees" type="text" value={formFields.Max_Attendees} required="*" onchange={changeHandler}></lightning-input>
+            
+            <lightning-record-edit-form object-api-name={eventObject.objectApiName} required="*" onchange={changeHandlerLocation}>
+                <lightning-messages>
+                </lightning-messages>
+                <lightning-input-field field-name={eventLocation.fieldApiName} style="padding: 0px;"></lightning-input-field>
+            </lightning-record-edit-form>
+
+            <lightning-input-rich-text label="Enter Detail" name="Detail" type="text" value={formFields.Detail} onchange={changeHandler} class="slds-m-bottom_large"></lightning-input-rich-text>
+            <lightning-button label="Add Event" onclick={handleSave} variant="brand"></lightning-button>         
+        </div>
+    </lightning-card>
+</template>
