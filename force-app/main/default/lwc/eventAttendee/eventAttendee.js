@@ -1,5 +1,7 @@
 import { LightningElement,api, wire } from 'lwc';
 import attendeeData from '@salesforce/apex/EventAttendeeController.getEventAttendeeList'
+import { NavigationMixin } from 'lightning/navigation';
+import { encodeDefaultFieldValues } from 'lightning/pageReferenceUtils';
 
 const column = [
     {label: 'Attendee name', fieldName : 'name'},
@@ -8,7 +10,7 @@ const column = [
     {label: 'Location(city)', fieldName : 'city'},
 ]
 
-export default class EventAttendee extends LightningElement {
+export default class EventAttendee extends NavigationMixin(LightningElement) {
     attendeeArray= [];
     column1 = column
     @api recordId;
@@ -22,5 +24,19 @@ export default class EventAttendee extends LightningElement {
         }).catch(error=>{
             console.error(JSON.stringify(error))
         })
+    }
+    navigateToNewEventAttendeePage() {
+        console.log('log test')
+        this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'Event_Attendee__c',
+                actionName: 'new'
+            },
+            state: {
+                defaultFieldValues: encodeDefaultFieldValues({Event__c: this.recordId}),
+                navigationLocation: 'RELATED_LIST'
+            }
+        });
     }
 }
