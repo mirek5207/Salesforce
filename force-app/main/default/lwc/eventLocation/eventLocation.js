@@ -10,7 +10,7 @@ export default class EventLocation extends LightningElement {
     connectedCallback(){
         locationData({eventId : this.recordId}).then(res=>{
             console.log('Response:',JSON.stringify(res))
-            if(JSON.stringify(res) == '[]' || JSON.stringify(res) == '[{}]'){
+            if(res == null){
                 this.locationIsEmpty = true;
             }
             else{
