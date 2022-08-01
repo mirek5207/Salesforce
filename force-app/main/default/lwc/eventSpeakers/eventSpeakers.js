@@ -12,7 +12,7 @@ export default class EventSpeakers extends NavigationMixin(LightningElement) {
     speakerArray= [];
     column1 = column
     @api recordId;
-
+ 
     @wire(speakerData)
     connectedCallback(){
         speakerData({eventId : this.recordId}).then(res=>{
@@ -29,9 +29,10 @@ export default class EventSpeakers extends NavigationMixin(LightningElement) {
                 actionName: 'new'
             },
             state: {
-                defaultFieldValues: encodeDefaultFieldValues({Event__c: this.recordId})
+                defaultFieldValues: encodeDefaultFieldValues({Event__c: this.recordId}),
+                navigationLocation: 'RELATED_LIST'
             }
         });
     }
-    
+
 }
