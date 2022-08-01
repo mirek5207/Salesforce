@@ -1,6 +1,7 @@
 import { LightningElement, api } from 'lwc';
 import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { NavigationMixin } from 'lightning/navigation';
 
 import EVENT_OBJECT from '@salesforce/schema/Event__c';
 import EVENT_NAME from '@salesforce/schema/Event__c.Name__c';
@@ -11,11 +12,11 @@ import EVENT_MAX_ATTENDEES from '@salesforce/schema/Event__c.Max_Seats__c';
 import EVENT_DETAIL from '@salesforce/schema/Event__c.Event_Detail__c';
 import EVENT_LOCATION from '@salesforce/schema/Event__c.Location__c'
 
-export default class EventForm extends LightningElement {
+export default class EventForm extends NavigationMixin(LightningElement) {
     eventObject = EVENT_OBJECT;
     eventOrganizer = EVENT_ORGANIZER;
     eventLocation = EVENT_LOCATION;
-
+    @api objectApiName;
     formFields = {
         Name:'',
         Organizer:'',
@@ -41,6 +42,18 @@ export default class EventForm extends LightningElement {
         }
         this.formFields.Location = event.target.value;
     }
+    navigateToRecordPage() {
+        console.log(this.recordId)
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.recordId,
+                objectApiName: 'Event__c',
+                actionName: 'view'
+            }
+        });
+    }
+
     handleSave(){
         const fields = {}
         fields[EVENT_NAME.fieldApiName] = this.formFields.Name
@@ -59,6 +72,15 @@ export default class EventForm extends LightningElement {
                     variant: 'success',
                 }),
             );
+            console.log('after insert record')
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: event.id,
+                    objectApiName: this.objectApiName,
+                    actionName: 'view'
+                }
+            });
         }).catch(error => {
             this.dispatchEvent(
                 new ShowToastEvent({
@@ -68,6 +90,7 @@ export default class EventForm extends LightningElement {
                 }),
             )
         });
+        
     }
 
 }
