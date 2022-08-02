@@ -1,0 +1,15 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title = "Upcoming Events" if:true={eventArray} icon-name="standard:event">
+        <div class="slds-m-around--xx-large">
+            <lightning-input type="search" label="Event Name" name = 'name' onchange={searchInput}></lightning-input>
+            <lightning-input label="Start Date Time" name="Start Date" type="datetime" onchange={searchInput}></lightning-input>
+            <lightning-input type="search" label="Event Location City" name = 'city' onchange={searchInput}></lightning-input><br/>
+            <lightning-datatable key-field="id"
+                                data={eventArrayFiltered}
+                                columns={column}
+                                hide-checkbox-column="true">
+            </lightning-datatable>
+        </div>
+    </lightning-card>
+</template>
