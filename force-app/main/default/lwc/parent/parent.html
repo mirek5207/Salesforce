@@ -1,0 +1,12 @@
+<template>
+    <c-lwc-child></c-lwc-child>
+    <lightning-card>
+        <div class="slds-var-m-around_large">
+            <h1 class="slds-text-heading_large slds-var-m-bottom_large">Parent Component</h1>
+            <lightning-button label="Check what value is in child component:" onclick={handleClick}></lightning-button>
+            <p>{childValue}</p>
+        </div>
+    </lightning-card>
+    <c-lwc-child2 value-from-parent={childValue}></c-lwc-child2>
+    
+</template>
