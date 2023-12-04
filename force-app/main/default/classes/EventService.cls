@@ -10,4 +10,9 @@ public with sharing class EventService {
         }
         return eventsLocationOrganizerList;
     }
+    public static List<Event__c> getAllEventsWhichAreLiveAndStartDateIsGreaterThanToday(){
+        Datetime todayDate = Datetime.now();
+        List<Event__c> eventsList = [SELECT id, Name, Organizer__r.Name, Start_Date_Time__c, End_Date_Time__c FROM Event__c WHERE Live__c = : LIVE_TRUE AND Start_Date_Time__c > :todayDate];
+        return eventsList;
+    } 
 }
