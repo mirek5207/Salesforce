@@ -39,3 +39,4 @@ $RECYCLE.BIN/
 
 # Local environment variables
 .env
+force-app/main/default/classes/script.apex
