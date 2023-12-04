@@ -5,4 +5,11 @@ public with sharing class EventAttendeeController {
         List<AttendeeLocation> attendeeList = EventAttendeeService.transformEventAttendeeListToAttendeeList(eventAttendeeList);
         return attendeeList;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<EventLocationOrganizer> getAttendeeEventsList(String attendeeId, Boolean isLive){
+        List<Event_Attendee__c> eventsList = EventAttendeeService.getEventsByAttendeeId(attendeeId, isLive);
+        List<EventLocationOrganizer> eventLocationOrganizerList = EventAttendeeService.transformEventAttendeeListToEventsList(eventsList);
+        return eventLocationOrganizerList;
+    }
 }

@@ -16,4 +16,12 @@ public with sharing class EventLocationOrganizer {
         this.endDateTime = endDateTime;
         this.eventDetail = eventDetail;
     }
+
+    public EventLocationOrganizer(Id id, String name, String organizerName, String city, Datetime startDateTime){
+        this.id = id;
+        this.name = name;
+        this.organizerName = organizerName;
+        this.city = city;
+        this.startDateTime = startDateTime;
+    }
 }
