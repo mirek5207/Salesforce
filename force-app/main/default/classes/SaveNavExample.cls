@@ -11,7 +11,4 @@ public with sharing class SaveNavExample {
         String accountName = [SELECT Id,Name FROM Account WHERE Name = 'Kevin' LIMIT 1]?.Name;
         System.debug('acounts: ' + accountName);
     }
-    public static void safeNav(){
-        Map<Id,Account> id2account = new Map<Id,Account>([SELECT Id, Name FROM Account WHERE Name = 'Kevin' LIMIT 1]);
-    }
 }
