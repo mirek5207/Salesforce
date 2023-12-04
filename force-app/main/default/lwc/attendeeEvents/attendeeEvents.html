@@ -1,0 +1,23 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title = "Events" if:true={upcomingEvents} icon-name="standard:event">
+        <div class="slds-m-around--xx-small">
+            <lightning-accordion allow-multiple-sections-open="true">
+                <lightning-accordion-section label="Upcoming Events">
+                    <lightning-datatable key-field="id"
+                                data={upcomingEvents}
+                                columns={column}
+                                hide-checkbox-column="true">
+                    </lightning-datatable>
+                </lightning-accordion-section>
+                <lightning-accordion-section label="Past Events">
+                    <lightning-datatable key-field="id"
+                                data={pastEvents}
+                                columns={column}
+                                hide-checkbox-column="true">
+                    </lightning-datatable>
+                </lightning-accordion-section>
+            </lightning-accordion>
+        </div>
+    </lightning-card>
+</template>
